@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Technical Team — Interview Marks Management</title>
+<style>
+:root{--bg:#0f1b2d;--bg2:#161d27;--panel:#1b2636;--line:#2c3b52;--tx:#e6ebf2;--mu:#9aa8bd;--or:#ff9900;--or2:#ffb84d;--ok:#3ecf8e;--wa:#f5c542;--er:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 "Segoe UI",system-ui,sans-serif;color:var(--tx);background:linear-gradient(160deg,var(--bg),var(--bg2));min-height:100vh}
+.bgart{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:20px 16px 50px}
+header{padding:18px 0 14px;border-bottom:2px solid var(--or);margin-bottom:18px}
+h1{margin:0;font-size:1.7rem;letter-spacing:.2px}
+header p{margin:4px 0 0;color:var(--or2)}
+.note{background:rgba(255,153,0,.08);border:1px solid rgba(255,153,0,.35);border-radius:8px;padding:10px 14px;color:var(--mu);font-size:.88rem;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--or);border-radius:8px;padding:12px 14px}
+.stat b{display:block;font-size:1.8rem;line-height:1.1}.stat span{color:var(--mu);font-size:.85rem}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:20px}
+h2{margin:0 0 14px;font-size:1.15rem;color:var(--or2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+label{display:block;font-size:.82rem;color:var(--mu);margin-bottom:4px}
+input,select,textarea{width:100%;background:#0f1722;color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:9px 10px;font:inherit}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--or);outline-offset:1px}
+textarea{resize:vertical;min-height:54px}
+.sec{border:1px solid var(--line);border-radius:8px;padding:12px;background:#142033}
+.sec h3{margin:0 0 8px;font-size:.95rem}
+.mk{display:flex;align-items:center;gap:8px;margin-bottom:8px}.mk input{width:90px}.mk span{color:var(--mu)}
+.totals{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:14px 0;padding:12px 14px;background:#0f1722;border-radius:8px;border:1px dashed var(--or)}
+.totals b{font-size:1.3rem;color:var(--or)}.totals small{display:block;color:var(--mu)}
+.btn{background:var(--or);color:#1a1200;border:0;border-radius:6px;padding:9px 16px;font-weight:700;cursor:pointer}
+.btn:hover{background:var(--or2)}.btn.sec2{background:transparent;color:var(--tx);border:1px solid var(--line)}
+.btn.sec2:hover{border-color:var(--or);color:var(--or2)}.btn.dg{background:transparent;color:var(--er);border:1px solid var(--er)}
+.btn.sm{padding:5px 10px;font-size:.8rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}.row>div{flex:1;min-width:160px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--or2);background:#142033;position:sticky;top:0}
+tr:hover td{background:rgba(255,255,255,.03)}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:700}
+.p-Selected{background:rgba(62,207,142,.15);color:var(--ok)}.p-Under{background:rgba(245,197,66,.15);color:var(--wa)}.p-Not{background:rgba(255,107,107,.15);color:var(--er)}
+.bar{display:inline-block;width:60px;height:7px;background:#0f1722;border-radius:4px;vertical-align:middle;margin-right:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--or)}
+.empty{text-align:center;color:var(--mu);padding:26px}
+dialog{background:var(--panel);color:var(--tx);border:1px solid var(--or);border-radius:10px;max-width:640px;width:92%;padding:20px}
+dialog::backdrop{background:rgba(0,0,0,.65)}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;font-size:.9rem}.kv dt{color:var(--mu)}.kv dd{margin:0}
+#report{display:none}
+.hint{color:var(--mu);font-size:.8rem;margin-top:8px}
+@media print{
+ body{background:#fff;color:#000}.bgart,.wrap{display:none!important}
+ #report{display:block;font:12px/1.4 Arial,sans-serif;color:#000}
+ #report h1{font-size:20px;border-bottom:3px solid #ff9900;padding-bottom:6px}
+ #report table{font-size:11px}#report th,#report td{border:1px solid #888;white-space:normal;color:#000;background:#fff;padding:5px}
+ #report th{background:#eee;position:static}
+ #report tr{page-break-inside:avoid}
+}
+@media(max-width:560px){h1{font-size:1.3rem}.kv{grid-template-columns:1fr}}
+</style></head><body>
+<svg class="bgart" width="100%" height="100%" aria-hidden="true"><defs><pattern id="g" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0H0V60" fill="none" stroke="#2c3b52" stroke-width=".5"/></pattern></defs>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<g fill="none" stroke="#ff9900" stroke-opacity=".25" stroke-width="1.5"><path d="M900 120a40 40 0 0 1 10-78 55 55 0 0 1 105-5 45 45 0 0 1 25 83z" transform="translate(40 20)"/><path d="M60 520a30 30 0 0 1 8-58 42 42 0 0 1 80-4 34 34 0 0 1 18 62z" transform="translate(0 120)"/></g>
+<g stroke="#4a6a96" stroke-opacity=".5" fill="#142033"><rect x="1050" y="420" width="90" height="22" rx="3"/><rect x="1050" y="448" width="90" height="22" rx="3"/><rect x="1050" y="476" width="90" height="22" rx="3"/><circle cx="1062" cy="431" r="3" fill="#ff9900"/><circle cx="1062" cy="459" r="3" fill="#3ecf8e"/><circle cx="1062" cy="487" r="3" fill="#ff9900"/><path d="M1095 420V360M1095 360H900M900 360V300" fill="none"/><circle cx="900" cy="300" r="6"/><circle cx="1095" cy="360" r="5"/></g></svg>
+
+<div class="wrap">
+<header><h1>Technical Team — Interview Marks Management</h1><p>Private Recruitment Evaluation Dashboard</p></header>
+<div class="note"><b>Privacy:</b> Records are stored only in this browser profile (localStorage) on this device. Nothing is sent to any server and nothing syncs across devices. localStorage is <b>not</b> encrypted or password-protected, so anyone using this browser profile can access it. Export a CSV backup regularly. Clearing browser data erases records. This is an independent tool and not an official AWS product.</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="panel"><h2 id="formTitle">Add Candidate</h2>
+<form id="f" autocomplete="off"><input type="hidden" id="eid">
+<div class="grid">
+<div><label for="name">Full name *</label><input id="name" required></div>
+<div><label for="rid">Registration no. / ID *</label><input id="rid" required></div>
+<div><label for="phone">Contact number</label><input id="phone" type="tel"></div>
+<div><label for="pos">Position / department</label><input id="pos"></div>
+<div><label for="date">Interview date</label><input id="date" type="date"></div>
+<div><label for="intv">Interviewer name</label><input id="intv"></div>
+</div>
+<h2 style="margin-top:18px">Evaluation</h2>
+<div class="grid" id="secs"></div>
+<div class="totals"><div><b id="tObt">0</b><small>Total obtained</small></div><div><b id="tMax">3</b><small>Maximum</small></div><div><b id="tPct">0.00%</b><small>Percentage</small></div></div>
+<div class="grid">
+<div><label for="fb">Overall interviewer feedback</label><textarea id="fb"></textarea></div>
+<div><label for="rec">Recommendation (your decision)</label><select id="rec"><option>Under Review</option><option>Selected</option><option>Not Selected</option></select></div>
+</div>
+<div class="row" style="margin-top:14px"><button class="btn" type="submit" id="saveBtn">Save candidate</button><button class="btn sec2" type="button" id="clearBtn">Clear form</button></div>
+</form>
+<details style="margin-top:14px"><summary style="cursor:pointer;color:var(--or2)">Scoring settings (maximum marks per section)</summary>
+<div class="row" style="margin-top:10px" id="cfg"></div>
+<p class="hint">Default is 1 per section. Existing records keep the maximums they were saved with.</p></details>
+</div>
+
+<div class="panel"><h2>Candidate Records</h2>
+<div class="row" style="margin-bottom:12px">
+<div style="flex:2"><label for="q">Search name or registration no.</label><input id="q" type="search"></div>
+<div><label for="fr">Recommendation</label><select id="fr"><option value="">All</option><option>Selected</option><option>Under Review</option><option>Not Selected</option></select></div>
+<div><label for="so">Sort by total marks</label><select id="so"><option value="">Newest first</option><option value="d">High to low</option><option value="a">Low to high</option></select></div>
+</div>
+<div class="tw"><table><thead><tr><th>Name</th><th>Reg. no.</th><th>Contact</th><th>S1</th><th>S2</th><th>S3</th><th>Total</th><th>%</th><th>Recommendation</th><th>Date</th><th>Actions</th></tr></thead><tbody id="tb"></tbody></table></div>
+<div class="row" style="margin-top:14px">
+<button class="btn" id="csvBtn">Export CSV (current filter)</button>
+<button class="btn sec2" id="bkBtn">Backup all records (CSV)</button>
+<button class="btn sec2" id="prBtn">Print / Save PDF report</button></div>
+<p class="hint">Export and print use the records currently shown by the search and filter above. S1 = Team Management &amp; Organization, S2 = Technical Support &amp; Event Management, S3 = Leadership &amp; Commitment.</p>
+</div>
+</div>
+
+<dialog id="dlg"><div id="dbody"></div><div class="row" style="margin-top:14px"><button class="btn sec2" id="dclose">Close</button></div></dialog>
+<div id="report"></div>
+
+<script>
+const SEC=["Team Management & Organization","Technical Support & Event Management","Leadership & Commitment"];
+const KEY="itm_records_v1",CK="itm_cfg_v1";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+let recs=load(KEY,[]),cfg=load(CK,{max:[1,1,1]});
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(recs))}catch(e){alert("Could not save: browser storage is unavailable or full.")}};
+const pctOf=(o,m)=>m>0?o/m*100:0;
+const tot=r=>r.s.reduce((a,b)=>a+b,0), mx=r=>r.max.reduce((a,b)=>a+b,0);
+const cls=r=>r.rec==="Selected"?"Selected":r.rec==="Not Selected"?"Not":"Under";
+
+// build form sections & config
+$("secs").innerHTML=SEC.map((t,i)=>`<div class="sec"><h3>Section ${i+1}: ${t}</h3><div class="mk"><input type="number" id="s${i}" min="0" step="any" aria-label="Marks ${t}"><span>/ <b id="mx${i}"></b></span></div><label for="n${i}">Notes (optional)</label><textarea id="n${i}"></textarea></div>`).join("");
+$("cfg").innerHTML=SEC.map((t,i)=>`<div><label for="c${i}">Max: ${t}</label><input type="number" id="c${i}" min="0.5" step="any" value="${cfg.max[i]}"></div>`).join("");
+function applyCfg(){cfg.max.forEach((m,i)=>{$("mx"+i).textContent=m;$("s"+i).max=m});try{localStorage.setItem(CK,JSON.stringify(cfg))}catch(e){}calc()}
+[0,1,2].forEach(i=>{
+ $("c"+i).addEventListener("change",()=>{const v=parseFloat($("c"+i).value);if(!(v>0)){$("c"+i).value=cfg.max[i];return}cfg.max[i]=v;applyCfg()});
+ $("s"+i).addEventListener("input",calc);
+});
+function maxes(){return $("eid").value?(recs.find(r=>r.id==$("eid").value)||{max:cfg.max}).max:cfg.max}
+function calc(){
+ const m=maxes();let o=0,ok=true;
+ [0,1,2].forEach(i=>{const el=$("s"+i);el.max=m[i];$("mx"+i).textContent=m[i];const v=parseFloat(el.value);
+  const bad=el.value!==""&&(isNaN(v)||v<0||v>m[i]);el.style.borderColor=bad?"var(--er)":"";if(bad)ok=false;if(!isNaN(v)&&!bad)o+=v});
+ const M=m.reduce((a,b)=>a+b,0);
+ $("tObt").textContent=+o.toFixed(2);$("tMax").textContent=+M.toFixed(2);$("tPct").textContent=pctOf(o,M).toFixed(2)+"%";
+ return ok;
+}
+
+$("f").addEventListener("submit",e=>{
+ e.preventDefault();
+ const m=maxes();const s=[];
+ for(let i=0;i<3;i++){const v=$("s"+i).value===""?0:parseFloat($("s"+i).value);
+  if(isNaN(v)||v<0||v>m[i]){alert(`Section ${i+1} marks must be between 0 and ${m[i]}.`);$("s"+i).focus();return}s.push(v)}
+ const rid=$("rid").value.trim(),id=$("eid").value;
+ if(recs.some(r=>r.rid.toLowerCase()===rid.toLowerCase()&&r.id!=id)&&!confirm("Another record has this registration number. Save anyway?"))return;
+ const rec={id:id?+id:Date.now(),name:$("name").value.trim(),rid,phone:$("phone").value.trim(),pos:$("pos").value.trim(),date:$("date").value,intv:$("intv").value.trim(),
+  s,max:[...m],notes:[0,1,2].map(i=>$("n"+i).value.trim()),fb:$("fb").value.trim(),rec:$("rec").value};
+ if(id){recs=recs.map(r=>r.id==id?rec:r)}else recs.push(rec);
+ save();const keepIntv=rec.intv,keepDate=rec.date;resetForm();$("intv").value=keepIntv;$("date").value=keepDate;render();$("name").focus();
+});
+function resetForm(){$("f").reset();$("eid").value="";$("formTitle").textContent="Add Candidate";$("saveBtn").textContent="Save candidate";$("rec").value="Under Review";if(!$("date").value)$("date").valueAsDate=new Date();calc()}
+$("clearBtn").onclick=resetForm;
+
+function view(){
+ let l=recs.slice();const q=$("q").value.trim().toLowerCase(),f=$("fr").value,so=$("so").value;
+ if(q)l=l.filter(r=>r.name.toLowerCase().includes(q)||r.rid.toLowerCase().includes(q));
+ if(f)l=l.filter(r=>r.rec===f);
+ if(so)l.sort((a,b)=>so==="d"?tot(b)-tot(a):tot(a)-tot(b));else l.sort((a,b)=>b.id-a.id);
+ return l;
+}
+function render(){
+ const n=recs.length,c=k=>recs.filter(r=>r.rec===k).length;
+ const avg=n?recs.reduce((a,r)=>a+pctOf(tot(r),mx(r)),0)/n:0;
+ $("stats").innerHTML=[["Candidates interviewed",n],["Selected",c("Selected")],["Under review",c("Under Review")],["Not selected",c("Not Selected")],["Average score",avg.toFixed(1)+"%"]].map(x=>`<div class="stat"><b>${x[1]}</b><span>${x[0]}</span></div>`).join("");
+ const l=view();
+ $("tb").innerHTML=l.length?l.map(r=>{const p=pctOf(tot(r),mx(r));return `<tr><td>${esc(r.name)}</td><td>${esc(r.rid)}</td><td>${esc(r.phone)||"—"}</td>`+
+  r.s.map((v,i)=>`<td>${v}/${r.max[i]}</td>`).join("")+
+  `<td><b>${+tot(r).toFixed(2)}/${+mx(r).toFixed(2)}</b></td><td><span class="bar"><i style="width:${p}%"></i></span>${p.toFixed(1)}%</td><td><span class="pill p-${cls(r)}">${esc(r.rec)}</span></td><td>${esc(r.date)||"—"}</td>`+
+  `<td><button class="btn sec2 sm" onclick="show(${r.id})">View</button> <button class="btn sec2 sm" onclick="edit(${r.id})">Edit</button> <button class="btn dg sm" onclick="del(${r.id})">Delete</button></td></tr>`}).join(""):
+  `<tr><td colspan="11" class="empty">${n?"No records match your search or filter.":"No candidates yet. Add the first interview result above."}</td></tr>`;
+}
+["q","fr","so"].forEach(i=>$(i).addEventListener("input",render));
+
+window.show=id=>{const r=recs.find(x=>x.id===id);if(!r)return;
+ $("dbody").innerHTML=`<h2>${esc(r.name)}</h2><dl class="kv"><dt>Registration no.</dt><dd>${esc(r.rid)}</dd><dt>Contact</dt><dd>${esc(r.phone)||"—"}</dd><dt>Position</dt><dd>${esc(r.pos)||"—"}</dd><dt>Interview date</dt><dd>${esc(r.date)||"—"}</dd><dt>Interviewer</dt><dd>${esc(r.intv)||"—"}</dd>`+
+ SEC.map((t,i)=>`<dt>${t}</dt><dd><b>${r.s[i]}/${r.max[i]}</b>${r.notes[i]?"<br>"+esc(r.notes[i]):""}</dd>`).join("")+
+ `<dt>Total</dt><dd><b>${+tot(r).toFixed(2)}/${+mx(r).toFixed(2)} (${pctOf(tot(r),mx(r)).toFixed(2)}%)</b></dd><dt>Recommendation</dt><dd>${esc(r.rec)}</dd><dt>Feedback</dt><dd>${esc(r.fb)||"—"}</dd></dl>`;
+ $("dlg").showModal()};
+$("dclose").onclick=()=>$("dlg").close();
+window.edit=id=>{const r=recs.find(x=>x.id===id);if(!r)return;
+ $("eid").value=r.id;["name","rid","phone","pos","date","intv","fb","rec"].forEach(k=>$(k).value=r[k]||"");
+ [0,1,2].forEach(i=>{$("s"+i).value=r.s[i];$("n"+i).value=r.notes[i]||""});
+ $("formTitle").textContent="Edit Candidate";$("saveBtn").textContent="Update candidate";calc();window.scrollTo({top:0,behavior:"smooth"});$("name").focus()};
+window.del=id=>{const r=recs.find(x=>x.id===id);if(r&&confirm(`Delete the record for ${r.name} (${r.rid})? This cannot be undone.`)){recs=recs.filter(x=>x.id!==id);save();if($("eid").value==id)resetForm();render()}};
+
+function csv(list,name){
+ const h=["Name","Registration No","Contact","Position","Interview Date","Interviewer",...SEC.flatMap((t,i)=>[t+" Marks",t+" Max",t+" Notes"]),"Total","Max Total","Percentage","Recommendation","Feedback"];
+ const rows=list.map(r=>[r.name,r.rid,r.phone,r.pos,r.date,r.intv,...[0,1,2].flatMap(i=>[r.s[i],r.max[i],r.notes[i]]),+tot(r).toFixed(2),+mx(r).toFixed(2),pctOf(tot(r),mx(r)).toFixed(2)+"%",r.rec,r.fb]);
+ const t=[h,...rows].map(r=>r.map(v=>{v=String(v??"");if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'}).join(",")).join("\r\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+t],{type:"text/csv;charset=utf-8"}));
+ a.download=name+"_"+new Date().toISOString().slice(0,10)+".csv";document.body.appendChild(a);a.click();a.remove();
+}
+$("csvBtn").onclick=()=>{const l=view();l.length?csv(l,"interview_results"):alert("No records to export.")};
+$("bkBtn").onclick=()=>{recs.length?csv(recs,"interview_backup_all"):alert("No records to back up.")};
+$("prBtn").onclick=()=>{
+ const l=view();if(!l.length){alert("No records to print.");return}
+ const f=$("fr").value,q=$("q").value.trim();
+ $("report").innerHTML=`<h1>Technical Team Recruitment — Interview Evaluation Report</h1><p>Generated: ${new Date().toLocaleString()} &nbsp;|&nbsp; Records: ${l.length}${f?" &nbsp;|&nbsp; Filter: "+esc(f):""}${q?" &nbsp;|&nbsp; Search: "+esc(q):""}<br>Confidential — for technical team members only.</p>
+ <table><thead><tr><th>#</th><th>Candidate</th><th>Reg. no. / Contact</th><th>Position / Date / Interviewer</th>${SEC.map((t,i)=>`<th>S${i+1}: ${t}</th>`).join("")}<th>Total</th><th>%</th><th>Recommendation</th><th>Feedback</th></tr></thead><tbody>`+
+ l.map((r,k)=>`<tr><td>${k+1}</td><td>${esc(r.name)}</td><td>${esc(r.rid)}<br>${esc(r.phone)}</td><td>${esc(r.pos)}<br>${esc(r.date)}<br>${esc(r.intv)}</td>`+
+  r.s.map((v,i)=>`<td>${v}/${r.max[i]}${r.notes[i]?"<br><i>"+esc(r.notes[i])+"</i>":""}</td>`).join("")+
+  `<td><b>${+tot(r).toFixed(2)}/${+mx(r).toFixed(2)}</b></td><td>${pctOf(tot(r),mx(r)).toFixed(2)}%</td><td><b>${esc(r.rec)}</b></td><td>${esc(r.fb)}</td></tr>`).join("")+`</tbody></table>`;
+ window.print();
+};
+
+applyCfg();$("date").valueAsDate=new Date();render();
+</script></body></html>
